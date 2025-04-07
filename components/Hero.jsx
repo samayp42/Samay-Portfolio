@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { textVariant } from "@/utils/motion";
 import StarsCanvas from "./canvas/Stars";
+import Image from "next/image";
 
 function Hero({ loading, isMobile }) {
   return (
@@ -49,9 +50,12 @@ function Hero({ loading, isMobile }) {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="hidden lg:block relative w-1/3"
         >
-          <img
+          <Image
             src="/assets/background/hero-image.png"
             alt="AI Technology"
+            width={500}
+            height={500}
+            priority
             className="w-full h-auto object-contain opacity-90 hover:opacity-100 transition-all duration-300 hover:scale-105 filter drop-shadow-lg"
           />
         </motion.div>
