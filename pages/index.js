@@ -10,7 +10,6 @@ import {
   Tech,
   Works,
 } from "@/components";
-import HeroBackground from "@/components/HeroBackground";
 import EarthContainer from "@/components/EarthContainer";
 import PlayerContainer from "@/components/PlayerContainer";
 import UpArrow from "./../public/assets/icons/up-arrow.svg";
