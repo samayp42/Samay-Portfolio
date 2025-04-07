@@ -51,7 +51,7 @@ function Hero({ loading, isMobile }) {
           className="hidden lg:block relative w-1/3"
         >
           <Image
-            src="../public/assets/background/hero-image.png"
+            src="/assets/background/hero-image.png"
             alt="AI Technology"
             width={500}
             height={500}
