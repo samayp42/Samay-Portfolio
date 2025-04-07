@@ -56,7 +56,7 @@ function About() {
           ))}
         </div>
         <Link
-          href="document/your-resume.pdf"
+          href="/document/SAMAY PATEL-RESUME.pdf" // Ensure this path is correct
           target="_blank"
           rel="noreferrer"
           className="w-fit"

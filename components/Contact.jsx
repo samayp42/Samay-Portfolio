@@ -25,6 +25,7 @@ function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch('/api/contact', {
@@ -45,19 +46,18 @@ function Contact() {
         throw new Error(data.message || 'Something went wrong');
       }
 
-      // Reset form and show success message
       setForm({
         name: '',
         email: '',
         message: '',
       });
       
-      // Show success message to user
-      alert('Thank you. I will get back to you as soon as possible.');
-
+      toast.success('Message sent successfully!');
     } catch (error) {
       console.error('Error:', error);
-      alert('Ahh, something went wrong. Please try again.');
+      toast.error('Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
