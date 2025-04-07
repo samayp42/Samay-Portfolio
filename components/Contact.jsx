@@ -26,19 +26,6 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.name || !form.email || !form.message) {
-      toast.error('All fields are required.');
-      return;
-    }
-
-    const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-    if (!emailPattern.test(form.email)) {
-      toast.error('Please enter a valid email address.');
-      return;
-    }
-
-    setLoading(true);
-
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -46,29 +33,31 @@ function Contact() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: DOMPurify.sanitize(form.name),
-          email: DOMPurify.sanitize(form.email),
-          message: DOMPurify.sanitize(form.message),
+          name: form.name,
+          email: form.email,
+          message: form.message,
         }),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        toast.success('Thank you for your message! I will get back to you soon.');
-        setForm({
-          name: "",
-          email: "",
-          message: "",
-        });
-      } else {
+      if (!response.ok) {
         throw new Error(data.message || 'Something went wrong');
       }
+
+      // Reset form and show success message
+      setForm({
+        name: '',
+        email: '',
+        message: '',
+      });
+      
+      // Show success message to user
+      alert('Thank you. I will get back to you as soon as possible.');
+
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Something went wrong. Please try again later.');
-    } finally {
-      setLoading(false);
+      alert('Ahh, something went wrong. Please try again.');
     }
   };
 
