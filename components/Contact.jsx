@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import DOMPurify from "dompurify";
@@ -23,6 +23,19 @@ function Contact() {
     setForm({ ...form, [name]: sanitizedValue });
   };
 
+  const SERVICE_ID = process.env.NEXT_PUBLIC_SERVICE_ID;
+  const TEMPLATE_ID = process.env.NEXT_PUBLIC_TEMPLATE_ID;
+  const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_KEY;
+
+  // Initialize EmailJS with your public key
+  useEffect(() => {
+    if (!PUBLIC_KEY) {
+      console.error('EmailJS public key is not configured');
+      return;
+    }
+    emailjs.init(PUBLIC_KEY);
+  }, [PUBLIC_KEY]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -31,27 +44,26 @@ function Contact() {
       // Log form data for debugging (without exposing sensitive info)
       console.log('Submitting form data...');
       
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          message: form.message,
-        }),
-      });
-
-      // Check if response has content before parsing
-      const text = await response.text();
-      const data = text.length > 0 ? JSON.parse(text) : {}; // Handle empty responses
-
-      if (!response.ok) {
-        console.error('Server response error:', data);
-        throw new Error(data.detail || data.message || 'Something went wrong');
+      // Use EmailJS directly instead of the API route
+      const templateParams = {
+        from_name: form.name,
+        from_email: form.email,
+        message: form.message,
+        to_name: 'Samay Patel', // Your name or recipient name
+      };
+      
+      if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+        throw new Error('EmailJS configuration is incomplete. Please check your environment variables.');
       }
 
+      const response = await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        templateParams
+      );
+      
+      console.log('Email sent successfully:', response);
+      
       setForm({
         name: '',
         email: '',
@@ -61,7 +73,7 @@ function Contact() {
       toast.success('Message sent successfully!');
     } catch (error) {
       console.error('Error sending message:', error);
-      toast.error(`Failed to send message: ${error.message || 'Please check if the server is configured correctly'}`);
+      toast.error(`Failed to send message: ${error.message || 'Please check your EmailJS configuration'}`);
     } finally {
       setLoading(false);
     }
