@@ -43,7 +43,9 @@ function Contact() {
         }),
       });
 
-      const data = await response.json();
+      // Check if response has content before parsing
+      const text = await response.text();
+      const data = text.length > 0 ? JSON.parse(text) : {}; // Handle empty responses
 
       if (!response.ok) {
         console.error('Server response error:', data);
