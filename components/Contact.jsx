@@ -28,6 +28,9 @@ function Contact() {
     setLoading(true);
 
     try {
+      // Log form data for debugging (without exposing sensitive info)
+      console.log('Submitting form data...');
+      
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -43,7 +46,8 @@ function Contact() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        console.error('Server response error:', data);
+        throw new Error(data.detail || data.message || 'Something went wrong');
       }
 
       setForm({
@@ -54,8 +58,8 @@ function Contact() {
       
       toast.success('Message sent successfully!');
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to send message. Please try again.');
+      console.error('Error sending message:', error);
+      toast.error(`Failed to send message: ${error.message || 'Please check if the server is configured correctly'}`);
     } finally {
       setLoading(false);
     }
